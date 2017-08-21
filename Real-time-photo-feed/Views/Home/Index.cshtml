@@ -1,31 +1,99 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model IEnumerable<Real_time_photo_feed.Models.PhotoFeed>
+
+@{
+    Layout = null;
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+    
+   <html>
+<head>
+    <title>ASP.NET Photo feed</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    <script src="//js.pusher.com/4.0/pusher.min.js"></script>
+</head>
+<body>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    <div class="container">
+        <form method="post" enctype="multipart/form-data" action="/Home/Index" onsubmit="return feed_it()">
+
+            <div class="form-group">
+                <label for="usr">Image:</label>
+                <input type="file" id="upload" name="upload" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="pwd">comment:</label>
+                <input type="text" id="Comment" name="Comment" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Feed it</button>
+            </div>
+        </form>
+        <div class="row" id="feeds">
+          
+
+            @foreach (var item in Model)
+            {
+            <span>
+                <h2>@item.Comment</h2>
+                <img src="@item.Imagepath">
+            </span>
+            }
+         
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+</body>
+</html>
+<script>
+     var files;
+
+        // Add events
+        $(document).ready(function() {
+            $('input[type=file]').on('change', prepareUpload);
+        })
+
+
+        // Grab the files and set them to our variable
+        function prepareUpload(event) {
+            files = event.target.files;
+        }
+
+        function feed_it() {
+            var data = new FormData();
+            $.each(files, function(key, value) {
+                data.append('upload', value);
+            });
+            data.append('Comment', document.getElementById('Comment').value);
+
+           
+            $.post({
+                url: '/Home/Index',
+                data: data,
+                processData: false, // Don't process the files
+                contentType: false, // Set content type to false as jQuery will tell the server it's a query string request
+                success: function(data) {
+                    if (data == "ok") {
+                        alert('done');
+                        document.getElementById('Comment').value = '';
+                    }
+                },
+                error: function(error) {
+                    alert('an error occured, please try again later')
+                }
+            });
+            return false;
+        }
+        var pusher = new Pusher("XXX_APP_KEY", {
+            
+            cluster: "XXX_APP_CLUSTER"
+        });
+        var my_channel = pusher.subscribe('a_channel');
+        my_channel.bind("an_event", function(doc) {
+          
+            var new_message = `<span>
+                        <h2>` + doc.Comment + `</h2>
+                        <img  src="` + doc.Imagepath + `">
+                    </span>`;
+            $('#feeds').prepend(new_message);
+        });
+</script>

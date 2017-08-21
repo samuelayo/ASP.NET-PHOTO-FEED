@@ -29,5 +29,7 @@ namespace Real_time_photo_feed.Models
         {
             return new ApplicationDbContext();
         }
+
+        public DbSet<PhotoFeed> FeedModel { get; set; }
     }
 }
