@@ -1,7 +1,8 @@
-# ASP.NET Real Time photo feed
-Build a Realtime photo feed with .NET and Pusher
+# BUILD A PHOTO FEED USING ASP.NET
 
-### Getting Started
+Here, we will learn about building a photo feed using Django. This is similar to instagram, but a stripped off version without the comments and like feature. The full tutorial can be found here : [https://pusher.com/tutorials/photo-feed-aspnet/ ](https://pusher.com/tutorials/photo-feed-aspnet/) 
+
+## Getting Started
 
 Clone the project repository by running the command below if you use SSH
 
@@ -17,7 +18,9 @@ git clone https://github.com/samuelayo/ASP.NET-PHOTO-FEED.git
 
 After cloning, open the `pusher_realtime_table.sln` file in visual studio.
 
-### Setup Pusher
+### Prerequisites
+
+#### Setup Pusher
 
 If you don't have one already, create a free Pusher account at https://pusher.com/signup then login to your dashboard and create an app. 
 
@@ -35,3 +38,10 @@ var pusher = new Pusher('XXX_APP_KEY', {cluster: 'XXX_CLUSTER'});
 ```
 
 And finally, start the application by clicking the debug button on your visual studio.
+
+## Built With
+
+* [Pusher](https://pusher.com/) - APIs to enable devs building realtime features
+* [ASP.NET](https://www.asp.net/) - Open source web framework for building modern web apps and services with .NET. 
+* [Jquery](https://jquery.com/) - The Write Less, Do More, JavaScript Library
+
